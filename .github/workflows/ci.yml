@@ -1,0 +1,49 @@
+name: CI - Run Cargo Tests
+
+on:
+    # Trigger the workflow on push and pull requests
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    test:
+        name: Run Cargo Tests
+        runs-on: ubuntu-latest
+
+        steps:
+            # Checkout the code
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # Set up Rust environment
+            - name: Set up Rust
+              uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+                  override: true
+
+            # Cache the Cargo registry and build
+            - name: Cache Cargo registry
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cargo/registry
+                  key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-cargo-registry-
+
+            - name: Cache Cargo build
+              uses: actions/cache@v4
+              with:
+                  path: target
+                  key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-cargo-build-
+
+            # Build and run tests
+            - name: Run tests
+              run: |
+                  cargo test --package expander-rs-keccak256 --bin expander-rs-keccak256 -- keccak_gf2_full --exact --show-output
