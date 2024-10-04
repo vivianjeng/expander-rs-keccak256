@@ -42,6 +42,9 @@ jobs:
                   key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
                   restore-keys: |
                       ${{ runner.os }}-cargo-build-
+            - name: Install openmpi
+              run: |
+                  sudo apt-get update && sudo apt-get install libopenmpi-dev -y
 
             # Build and run tests
             - name: Run tests
