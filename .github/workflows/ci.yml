@@ -44,7 +44,7 @@ jobs:
                       ${{ runner.os }}-cargo-build-
             - name: Install openmpi
               run: |
-                  sudo apt-get update && sudo apt-get install libopenmpi-dev -y
+                  sudo apt-get update && sudo apt-get install mpich libopenmpi-dev -y
 
             # Build and run tests
             - name: Run tests
